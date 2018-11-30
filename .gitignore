@@ -113,3 +113,4 @@ dmypy.json
 .idea
 
 config.py
+db_rolling.log
