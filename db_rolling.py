@@ -39,7 +39,7 @@ def main():
       deleted_count = result.deleted_count
 
       logging.info('delete entries before ' + str(time_to_be_deleted))
-      logging.info('number of records deleted: ' + deleted_count)
+      logging.info('number of records deleted: ' + str(deleted_count))
     except Exception as e:
       logging.error('Error: ' + str(e))
     logging.info('Finished')
