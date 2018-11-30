@@ -30,7 +30,7 @@ def main():
     logging.basicConfig(filename='db_rolling.log', level=logging.INFO, format='%(asctime)s %(message)s')
     logging.info('Started')
     try:
-      time_to_be_deleted = one_hour_before_milli_time()
+      time_to_be_deleted = one_day_before_milli_time()
       result = http_data_collection.delete_many({
         'timestamp': {
           '$lt': time_to_be_deleted

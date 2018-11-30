@@ -40,6 +40,7 @@ def GET_print(pkt):
   if TCP in pkt:
     new_packet_obj['src_port'] = pkt[TCP].sport
     new_packet_obj['dst_port'] = pkt[TCP].dport
+    new_packet_obj['size'] = len(pkt[TCP])
   # new_packet_obj['dst_ip'] = packet1.sprintf("%IP.dst%")
   # new_packet_obj['src_ip'] = packet1.sprintf("%IP.src%")
   # new_packet_obj['dst_mac'] = packet1.sprintf("%Ether.dst%")
@@ -48,11 +49,11 @@ def GET_print(pkt):
   # new_packet_obj['dst_port'] = packet1.sprintf("TCP.dport")
   new_packet_obj['timestamp'] = current_milli_time()
 
-  http_data_collection.insert_one(new_packet_obj)
-
+  # http_data_collection.insert_one(new_packet_obj)
+  # print(len(pkt[TCP]))
   # print(new_packet_obj)
   # print('*****************************************************************************************************')
-  # packet1.show()
+  # pkt.show()
   # ret += "*****************************************************************************************************\n"
   # return ret
 
