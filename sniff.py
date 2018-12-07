@@ -49,7 +49,7 @@ def GET_print(pkt):
   # new_packet_obj['dst_port'] = packet1.sprintf("TCP.dport")
   new_packet_obj['timestamp'] = current_milli_time()
 
-  # http_data_collection.insert_one(new_packet_obj)
+  http_data_collection.insert_one(new_packet_obj)
   # print(len(pkt[TCP]))
   # print(new_packet_obj)
   # print('*****************************************************************************************************')

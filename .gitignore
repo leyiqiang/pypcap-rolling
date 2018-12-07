@@ -114,3 +114,5 @@ dmypy.json
 
 config.py
 db_rolling.log
+
+devices.txt
