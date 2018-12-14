@@ -9,6 +9,7 @@ from config import MONGO_DB_ADDRESS
 
 IP = 'IP'
 TCP = 'TCP'
+UDP = 'UDP'
 ETHER = 'Ether'
 
 writeConcern = pymongo.write_concern.WriteConcern(w=0, wtimeout=None, j=None, fsync=None)
@@ -41,6 +42,10 @@ def GET_print(pkt):
     new_packet_obj['src_port'] = pkt[TCP].sport
     new_packet_obj['dst_port'] = pkt[TCP].dport
     new_packet_obj['size'] = len(pkt[TCP])
+  if UDP in pkt:
+    new_packet_obj['src_port'] = pkt[UDP].sport
+    new_packet_obj['dst_port'] = pkt[UDP].dport
+    new_packet_obj['size'] = len(pkt[UDP])
   # new_packet_obj['dst_ip'] = packet1.sprintf("%IP.dst%")
   # new_packet_obj['src_ip'] = packet1.sprintf("%IP.src%")
   # new_packet_obj['dst_mac'] = packet1.sprintf("%Ether.dst%")
@@ -59,5 +64,6 @@ def GET_print(pkt):
 
 if __name__ == '__main__':
 
-  sniff(iface='en0', prn=http_header, filter="tcp port (80 or 443)")
-  # sniff(iface='eth5', prn=http_header, filter="tcp port (80 or 443)")
+  # sniff(iface='en0', prn=http_header, filter="tcp or udp")
+  # sniff(iface='en0', prn=http_header, filter="tcp port (80 or 443)")
+  sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)")
