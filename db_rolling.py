@@ -43,7 +43,7 @@ def main():
       time_to_be_deleted = ten_minute_before_milli_time()
       twenty_minute_before = twenty_minute_before_milli_time()
       # aggregate data
-      http_data_collection.aggregate([
+      results = http_data_collection.aggregate([
         {
           '$match': {
             'timestamp': {
@@ -58,8 +58,17 @@ def main():
               'src_ip': '$src_ip',
               'dst_ip': '$dst_ip',
             },
-            'size': { '$sum': '$size' },
-            'count': { '$sum': 1 },
+            'totalPacketSize': { '$sum': '$packet_size' },
+            'packetCount': { '$sum': 1 },
+          },
+        },
+        {
+          '$project': {
+            '_id': 0,
+            'totalPacketSize': 1,
+            'packetCount': 1,
+            'src_ip': '$_id.src_ip',
+            'dst_ip': '$_id.dst_ip',
           },
         },
         {
@@ -72,6 +81,8 @@ def main():
           '$out': tcpAggregatedDataString,
         },
       ])
+
+      # print(list(results))
       # delete data
       result = http_data_collection.delete_many({
         'timestamp': {
