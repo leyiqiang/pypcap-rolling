@@ -66,4 +66,4 @@ if __name__ == '__main__':
 
   # sniff(iface='en0', prn=http_header, filter="tcp or udp")
   # sniff(iface='en0', prn=http_header, filter="tcp port (80 or 443)")
-  sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)")
+  sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)", store=0)
