@@ -29,6 +29,24 @@ def current_milli_time():
   return int(round(time.time() * 1000))
 
 
+packet_list = []
+time_tracker = {
+  'last_time': time.time()
+}
+
+def add_packet_to_packet_set(packet):
+  packet_list.append(packet)
+  time_duration = 0.1 # 0.1s
+  # if time duration > 0.1, insert the packet set into the database
+  cur_time = time.time()
+  # print(cur_time)
+  if cur_time - time_tracker['last_time'] >= time_duration:
+    time_tracker['last_time'] = cur_time
+    # print(len(packet_list))
+    http_data_collection.insert_many(packet_list)
+    packet_list.clear()
+
+
 def GET_print(pkt):
   new_packet_obj = dict()
   # ret = "***************************************GET PACKET****************************************************\n"
@@ -54,7 +72,9 @@ def GET_print(pkt):
   # new_packet_obj['dst_port'] = packet1.sprintf("TCP.dport")
   new_packet_obj['timestamp'] = current_milli_time()
 
-  http_data_collection.insert_one(new_packet_obj)
+  # http_data_collection.insert_one(new_packet_obj)
+  # add packet to the set
+  add_packet_to_packet_set(new_packet_obj)
   # print(len(pkt[TCP]))
   # print(new_packet_obj)
   # print('*****************************************************************************************************')
@@ -63,7 +83,7 @@ def GET_print(pkt):
   # return ret
 
 if __name__ == '__main__':
-
   # sniff(iface='en0', prn=http_header, filter="tcp or udp")
   # sniff(iface='en0', prn=http_header, filter="tcp port (80 or 443)")
-  sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)", store=0)
+  # sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)", store=0)
+  sniff(iface='eth1', prn=http_header, filter="tcp or udp")

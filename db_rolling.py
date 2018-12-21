@@ -15,6 +15,8 @@ client = MongoClient(MONGO_DB_ADDRESS, serverSelectionTimeoutMS=1)
 scapy_database = client['scapy']
 http_data_collection = scapy_database['tcpdatas']
 tcpAggregatedDataString = 'tcpAggregatedData'
+tcp_aggregated_data_collection = scapy_database[tcpAggregatedDataString]
+
   # .with_options(write_concern=writeConcern)
 
 
@@ -77,11 +79,11 @@ def main():
             'endMS': time_to_be_deleted,
           }
         },
-        {
-          '$out': tcpAggregatedDataString,
-        },
+        # {
+        #   '$out': tcpAggregatedDataString,
+        # },
       ])
-
+      tcp_aggregated_data_collection.insert_many(results)
       # print(list(results))
       # delete data
       result = http_data_collection.delete_many({
