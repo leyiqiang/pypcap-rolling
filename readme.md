@@ -2,7 +2,7 @@
 # pypcap-monitor
 A python project to sniff the internet traffic and stored it into 
 MongoDB database. 
-## How to run
+## How To Run
 ```bash
 tmux attach
 ./make.sh-run.sh &
@@ -24,3 +24,24 @@ MONGO_DB_ADDRESS = '<MONGO_DB_ADDRESS>'.
 5. addDevices.py: Read the device mac and name information from
 a file in the router. Store the device information into the MongoDB
 
+# Crontab Configuration
+```
+*/2 * * * * python3 [path]/pypcap-monitor/db_rolling.py # every 2 minutes
+0 * * * * python3 [path]/pypcap-monitor/db_rolling2.py # every hour 
+```
+
+# Scapy Configuration
+Ask Daniel for which iface should be listened to in the router
+```python
+  # sniff iface en0 of all tcp and udp packets
+  sniff(iface='en0', prn=http_header, filter="tcp or udp")
+  
+  # sniff iface en0 of tcp port 80 and 443 packets
+  sniff(iface='en0', prn=http_header, filter="tcp port (80 or 443)")
+  
+  # sniff iface en1 of tcp port 80 and 443 packets
+  sniff(iface='eth1', prn=http_header, filter="tcp port (80 or 443)", store=0)
+  
+  # sniff iface eth1 of all tcp and udp packets
+  sniff(iface='eth1', prn=http_header, filter="tcp or udp")
+```
