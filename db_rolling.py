@@ -1,4 +1,3 @@
-
 import pymongo
 from pymongo import MongoClient
 from config import MONGO_DB_ADDRESS
@@ -19,37 +18,21 @@ tcp_aggregated_data_collection = scapy_database[tcpAggregatedDataString]
 
   # .with_options(write_concern=writeConcern)
 
-
-def one_day_before_milli_time():
-  one_day_before = time.time() - 60 * 60 * 24
-  return int(round(one_day_before * 1000))
-
-
-def one_hour_before_milli_time():
-  one_day_before = time.time() - 60 * 60
-  return int(round(one_day_before * 1000))
-
-def ten_minute_before_milli_time():
-  ten_minute_before = time.time() - 60 * 10
-  return int(round(ten_minute_before * 1000))
-
-
-def twenty_minute_before_milli_time():
-  ten_minute_before = time.time() - 60 * 20
-  return int(round(ten_minute_before * 1000))
+def get_timestamp_before_in_milliseconds(seconds):
+  return (time.time() - seconds) * 1000
 
 def main():
     logging.basicConfig(filename='db_rolling.log', level=logging.INFO, format='%(asctime)s %(message)s')
     logging.info('Started')
     try:
-      time_to_be_deleted = ten_minute_before_milli_time()
-      twenty_minute_before = twenty_minute_before_milli_time()
+      time_to_be_deleted = get_timestamp_before_in_milliseconds(1 * 60) # 1 mins
+      start_time = get_timestamp_before_in_milliseconds(2 * 60) # 2 mins
       # aggregate data
       results = http_data_collection.aggregate([
         {
           '$match': {
             'timestamp': {
-              '$gt': twenty_minute_before,
+              '$gt': start_time,
               '$lt': time_to_be_deleted,
             },
           },
@@ -75,7 +58,7 @@ def main():
         },
         {
           '$addFields': {
-            'startMS': twenty_minute_before,
+            'startMS': start_time,
             'endMS': time_to_be_deleted,
           }
         },
