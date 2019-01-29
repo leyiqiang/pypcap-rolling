@@ -17,18 +17,18 @@ tcp_aggregated_data_collection = scapy_database[tcpAggregatedDataString]
 
 # .with_options(write_concern=writeConcern)
 
-def two_days_before_milli_time():
-  ten_minute_before = time.time() - 60 * 60 * 24 * 2 # two days before
-  return int(round(ten_minute_before * 1000))
+def get_timestamp_before_in_milliseconds(seconds):
+  return (time.time() - seconds) * 1000
+
 
 '''
-Delete the aggregate data seven days ago
+Delete the aggregate data 24 hours ago
 '''
 def main():
   logging.basicConfig(filename='db_rolling2.log', level=logging.INFO, format='%(asctime)s %(message)s')
   logging.info('Started')
   try:
-    time_to_be_deleted = two_days_before_milli_time()
+    time_to_be_deleted = get_timestamp_before_in_milliseconds(60 * 60 * 24) # 24 hours ago
 
     # print(list(results))
     # delete data
