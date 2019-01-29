@@ -27,7 +27,7 @@ a file in the router. Store the device information into the MongoDB
 ## Crontab Configuration
 ```
 * * * * * python3 /home/ubuntu/pypcap-monitor/db_rolling.py # every minute
-*/10 * * * * python3 /home/ubuntu/pypcap-monitor/db_rolling2.py # every 10 minutes
+*/5 * * * * python3 /home/ubuntu/pypcap-monitor/db_rolling2.py # every 5 minutes
 ```
 
 ## Scapy Configuration
