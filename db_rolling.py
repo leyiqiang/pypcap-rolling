@@ -40,8 +40,8 @@ def main():
         {
           '$group': {
             '_id': {
-              'src_ip': '$src_ip',
-              'dst_ip': '$dst_ip',
+              'src_mac': '$src_mac',
+              'dst_mac': '$dst_mac',
             },
             'totalPacketSize': { '$sum': '$packet_size' },
             'packetCount': { '$sum': 1 },
@@ -52,8 +52,8 @@ def main():
             '_id': 0,
             'totalPacketSize': 1,
             'packetCount': 1,
-            'src_ip': '$_id.src_ip',
-            'dst_ip': '$_id.dst_ip',
+            'src_mac': '$_id.src_mac',
+            'dst_mac': '$_id.dst_mac',
           },
         },
         {
