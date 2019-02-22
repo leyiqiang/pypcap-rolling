@@ -79,7 +79,7 @@ def main():
       logging.info('delete entries before ' + str(time_to_be_deleted))
       logging.info('number of records deleted: ' + str(deleted_count))
     except Exception as e:
-      print(e)
+      print('Error: ' + str(e))
       logging.error('Error: ' + str(e))
     logging.info('Finished')
 
