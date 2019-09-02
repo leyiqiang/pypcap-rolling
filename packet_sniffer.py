@@ -10,6 +10,8 @@ class PacketSniffer(object):
         self.database_host = database_host
         self. database_port = database_port
         self.sniff_config = sniff_config
+        MyDatabase = getattr(databases, self.db_class_name)
+        self.db_instance = MyDatabase(self.database_host, self.database_port)
 
     def http_header(self, packet):
         # http_packet=str(packet)
@@ -41,11 +43,9 @@ class PacketSniffer(object):
         # new_packet_obj['src_port'] = packet1.sprintf("TCP.sport")
         # new_packet_obj['dst_port'] = packet1.sprintf("TCP.dport")
         new_packet_obj['timestamp'] = current_milli_time()
-        MyDatabase = getattr(databases, self.db_class_name)
-        db_instance = MyDatabase(self.database_host, self.database_port)
         # http_data_collection.insert_one(new_packet_obj)
         # add packet to the set
-        db_instance.add_packet_to_packet_set(new_packet_obj)
+        self.db_instance.add_packet_to_packet_set(new_packet_obj)
         # print(len(pkt[TCP]))
         # print(new_packet_obj)
         # print('*****************************************************************************************************')

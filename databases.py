@@ -14,13 +14,14 @@ class Database:
         raise NotImplementedError("This method is not implemented in interface.")
 
 
-class RedisDatabase:
+class RedisDatabase(Database):
     def __init__(self, database_host, database_port):
         # establish connections
         super().__init__(database_host, database_port)
         pool = ConnectionPool(host=database_host, port=database_port)
         self.redis = StrictRedis(connection_pool=pool)
-        self.packet_dict = []
+        print ('here')
+        self.packet_dict = {}
         self.time_tracker = {
             'last_time': time.time()
         }
