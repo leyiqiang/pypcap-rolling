@@ -20,7 +20,6 @@ class RedisDatabase(Database):
         super().__init__(database_host, database_port)
         pool = ConnectionPool(host=database_host, port=database_port)
         self.redis = StrictRedis(connection_pool=pool)
-        print ('here')
         self.packet_dict = {}
         self.time_tracker = {
             'last_time': time.time()
@@ -65,6 +64,7 @@ class MongodbDatabase(Database):
         client = MongoClient(mongodb_address, serverSelectionTimeoutMS=1)
         scapy_database = client['scapy']
         self.http_data_collection = scapy_database['tcpdatas'].with_options(write_concern=writeConcern)
+        self.device_collection = scapy_database['devices']
 
         self.packet_list = []
         self.time_tracker = {
@@ -82,6 +82,22 @@ class MongodbDatabase(Database):
             # print(len(packet_list))
             self.http_data_collection.insert_many(self.packet_list)
             self.packet_list.clear()
+
+    def add_device(self):
+        fname = 'devices.txt'
+        deviceList = []
+        with open(fname) as f:
+            for line in f:
+                macAddress, name = line.strip().split(' ')
+                deviceList.append({
+                    'macAddress': macAddress,
+                    'name': name,
+                })
+        self.device_collection.insert_many(deviceList)
+
+    def db_rolling(self):
+        a = 1
+        # todo
 
 
 
