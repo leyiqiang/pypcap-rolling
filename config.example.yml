@@ -1,0 +1,7 @@
+db_class_name: '<DB_CLASS_NAME>' # currently supports mongodb and redis
+db_host: '<DB_HOST>'
+db_port: '<DB_PORT>'
+sniff_config:
+  iface: '<INTERFACE>'
+  filter: '<PACKET_FILTER>'
+mode: '<MODE>' # mode is one of sniffing, rolling or adding_device

@@ -1,0 +1,5 @@
+mongo_db:
+  address: '<MONGO_DB_ADDRESS>'
+redis:
+  host: '<REDIS_HOST>'
+  port: '<REDIS_PORT>'
