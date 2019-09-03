@@ -2,9 +2,9 @@ from config_parser import ConfigParser
 import argparse
 import logging
 from packet_sniffer import PacketSniffer
-import json
 from addDevices import add_device
-from constants import ADDING_DEVICE_MODE, ROLLING_MODE, SNIFFING_MODE
+from db_rolling import DBRolling
+from constants import ADDING_DEVICE_MODE, DELETE_AGGREGATED_DATA_MODE, AGGREGATE_MODE, SNIFFING_MODE
 
 if __name__ == '__main__':
     # parsing user inputs
@@ -43,13 +43,18 @@ if __name__ == '__main__':
         logging.debug(sniff_config)
         packet_sniffer = PacketSniffer(database_class_name, database_host, database_port, sniff_config)
         packet_sniffer.start_sniffing()
-    elif mode == ROLLING_MODE:
-        # todo
-        logging.info('Program start running in rolling mode')
-        a = 2
+    elif mode == AGGREGATE_MODE:
+        time_before = parser.time_before
+        db_rolling = DBRolling(database_class_name, database_host, database_port, time_before)
+        db_rolling.aggregate(time_before)
+        logging.info('Program start running in aggregate mode')
+    elif mode == DELETE_AGGREGATED_DATA_MODE:
+        time_before = parser.time_before
+        db_rolling = DBRolling(database_class_name, database_host, database_port, time_before)
+        db_rolling.delete_aggregated_data(time_before)
+        logging.info('Program start deleting aggregated data')
     elif mode == ADDING_DEVICE_MODE:
         add_device(database_class_name, database_host, database_port)
         logging.info('Program start adding devices')
-        a = 3
     else:
         logging.warning('Program not running in any mode')

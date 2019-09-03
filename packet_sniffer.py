@@ -1,5 +1,5 @@
 from scapy.all import *
-from until import current_milli_time
+from util import current_milli_time
 from constants import IP, TCP, UDP, ETHER, FILTER, IFACE
 import databases
 

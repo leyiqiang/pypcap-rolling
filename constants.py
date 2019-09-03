@@ -9,9 +9,11 @@ FILTER = 'filter'
 
 MODE = 'mode'
 SNIFFING_MODE = 'sniffing'
-ROLLING_MODE = 'rolling'
 ADDING_DEVICE_MODE = 'adding_device'
+DELETE_AGGREGATED_DATA_MODE = 'delete_aggregated_data'
+AGGREGATE_MODE = 'aggregate'
 
+TIME_BEFORE = 'time_before'
 
 # for packet_sniffer
 IP = 'IP'
