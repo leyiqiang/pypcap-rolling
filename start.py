@@ -45,12 +45,12 @@ if __name__ == '__main__':
         packet_sniffer.start_sniffing()
     elif mode == AGGREGATE_MODE:
         time_before = parser.time_before
-        db_rolling = DBRolling(database_class_name, database_host, database_port, time_before)
+        db_rolling = DBRolling(database_class_name, database_host, database_port)
         db_rolling.aggregate(time_before)
         logging.info('Program start running in aggregate mode')
     elif mode == DELETE_AGGREGATED_DATA_MODE:
         time_before = parser.time_before
-        db_rolling = DBRolling(database_class_name, database_host, database_port, time_before)
+        db_rolling = DBRolling(database_class_name, database_host, database_port)
         db_rolling.delete_aggregated_data(time_before)
         logging.info('Program start deleting aggregated data')
     elif mode == ADDING_DEVICE_MODE:

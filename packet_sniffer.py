@@ -10,6 +10,7 @@ class PacketSniffer(object):
         self.database_host = database_host
         self. database_port = database_port
         self.sniff_config = sniff_config
+        # create database instance
         MyDatabase = getattr(databases, self.db_class_name)
         self.db_instance = MyDatabase(self.database_host, self.database_port)
 

@@ -1,4 +1,3 @@
-import pymongo
 from pymongo import MongoClient
 import time
 from redis import StrictRedis, ConnectionPool
@@ -47,11 +46,8 @@ class RedisDatabase(Database):
         time_duration = 0.1  # 0.1s
         # if time duration > 0.1, insert the packet set into the database
         cur_time = time.time()
-        # print(cur_time)
         if cur_time - self.time_tracker['last_time'] >= time_duration:
             self.time_tracker['last_time'] = cur_time
-            # print(len(packet_list))
-            # tcp_aggregated_data_collection.insert_many(packet_dict.values())
             for p in self.packet_dict.values():
                 self.redis.zadd('packets', {json.dumps(p): p['startMS']})
             self.packet_dict.clear()
@@ -61,11 +57,11 @@ class MongodbDatabase(Database):
     def __init__(self, database_host, database_port):
         # establish connections
         super().__init__(database_host, database_port)
-        writeConcern = pymongo.write_concern.WriteConcern(w=0, wtimeout=None, j=None, fsync=None)
+        # writeConcern = pymongo.write_concern.WriteConcern(w=0, wtimeout=None, j=None, fsync=None)
         mongodb_address = database_host + ':' + database_port
         client = MongoClient(mongodb_address, serverSelectionTimeoutMS=1)
         scapy_database = client['scapy']
-        self.http_data_collection = scapy_database['tcpdatas'].with_options(write_concern=writeConcern)
+        self.http_data_collection = scapy_database['tcpdatas']#.with_options(write_concern=writeConcern)
         self.device_collection = scapy_database['devices']
         tcpAggregatedDataString = 'tcpAggregatedData'
         self.tcp_aggregated_data_collection = scapy_database[tcpAggregatedDataString]
@@ -98,7 +94,7 @@ class MongodbDatabase(Database):
                 })
         self.device_collection.insert_many(deviceList)
 
-    # aggreate the data before certain time, delete the original data after aggregation
+    # aggregate the data before certain time, delete the original data after aggregation
     def aggregate_and_delete(self, time_before):
         logging.basicConfig(filename='db_rolling.log', level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Started')
@@ -144,8 +140,8 @@ class MongodbDatabase(Database):
                 #   '$out': tcpAggregatedDataString,
                 # },
             ])
-            self.tcp_aggregated_data_collection.insert_many(results)
             # print(list(results))
+            self.tcp_aggregated_data_collection.insert_many(results)
             # delete data
             result = self.http_data_collection.delete_many({
                 'timestamp': {
@@ -157,6 +153,7 @@ class MongodbDatabase(Database):
             logging.info('delete entries before ' + str(time_to_be_deleted))
             logging.info('number of records deleted: ' + str(deleted_count))
         except Exception as e:
+            # raise(e)
             print('Error: ' + str(e))
             logging.error('Error: ' + str(e))
         logging.info('Finished')
