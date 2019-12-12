@@ -3,16 +3,13 @@ import time
 from redis import StrictRedis, ConnectionPool
 import json
 import logging
-from util import get_timestamp_before_in_milliseconds
+from util import get_timestamp_before_in_milliseconds, current_milli_time
 
 
 class Database:
     def __init__(self, database_host, database_port):
         self.database_host = database_host
         self.database_port = database_port
-
-    def add_packet_to_packet_set(self, packet):
-        raise NotImplementedError("This method is not implemented.")
 
 
 class RedisDatabase(Database):
@@ -26,31 +23,20 @@ class RedisDatabase(Database):
             'last_time': time.time()
         }
 
-    def add_packet_to_packet_set(self, packet):
-        p_tuple = (packet['src_mac'], packet['dst_mac'])
-        if p_tuple in self.packet_dict:
-            self.packet_dict[p_tuple]['packetCount'] += 1
-            self.packet_dict[p_tuple]['totalPacketSize'] += packet['packet_size']
-            self.packet_dict[p_tuple]['endMS'] = packet['timestamp']
-        else:
-            obj = {
-                'src_mac': packet['src_mac'],
-                'dst_mac': packet['dst_mac'],
-                'startMS': packet['timestamp'],
-                'endMS': packet['timestamp'] + 100,
-                'packetCount': 1,
-                'totalPacketSize': packet['packet_size'],
-            }
-            self.packet_dict[p_tuple] = obj
+    def get_data_before(self, time_before):
+        cur_time_in_ms = current_milli_time()
+        data = self.redis.zrangebyscore('packets', cur_time_in_ms - time_before * 1000, cur_time_in_ms)
+        return data
 
-        time_duration = 0.1  # 0.1s
-        # if time duration > 0.1, insert the packet set into the database
-        cur_time = time.time()
-        if cur_time - self.time_tracker['last_time'] >= time_duration:
-            self.time_tracker['last_time'] = cur_time
-            for p in self.packet_dict.values():
-                self.redis.zadd('packets', {json.dumps(p): p['startMS']})
-            self.packet_dict.clear()
+    def get_and_delete_data_before(self, time_before):
+        cur_time_in_ms = current_milli_time()
+        data = self.redis.zrangebyscore('packets', cur_time_in_ms - time_before * 1000, cur_time_in_ms)
+        self.redis.zremrangebyscore('packets', cur_time_in_ms - time_before * 1000, cur_time_in_ms)
+        return data
+
+    def delete_data_before(self, time_before):
+        cur_time_in_ms = current_milli_time()
+        self.redis.zremrangebyscore('packets', cur_time_in_ms - time_before * 1000, cur_time_in_ms)
 
 
 class MongodbDatabase(Database):
@@ -70,17 +56,6 @@ class MongodbDatabase(Database):
             'last_time': time.time()
         }
 
-    def add_packet_to_packet_set(self, packet):
-        self.packet_list.append(packet)
-        time_duration = 0.1  # 0.1s
-        # if time duration > 0.1, insert the packet set into the database
-        cur_time = time.time()
-        # print(cur_time)
-        if cur_time - self.time_tracker['last_time'] >= time_duration:
-            self.time_tracker['last_time'] = cur_time
-            # print(len(packet_list))
-            self.http_data_collection.insert_many(self.packet_list)
-            self.packet_list.clear()
 
     def add_device(self):
         fname = 'devices.txt'
@@ -94,13 +69,17 @@ class MongodbDatabase(Database):
                 })
         self.device_collection.insert_many(deviceList)
 
+    def insert_aggregate_data(self, results):
+        self.http_data_collection.insert_many(results)
+
     # aggregate the data before certain time, delete the original data after aggregation
     def aggregate_and_delete(self, time_before):
         logging.basicConfig(filename='db_rolling.log', level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Started')
         try:
             time_to_be_deleted = get_timestamp_before_in_milliseconds(1 * 60)  # 1 mins
-            start_time = get_timestamp_before_in_milliseconds(time_before) # 2 * 60
+            start_time = get_timestamp_before_in_milliseconds(time_before)
+
             # aggregate data
             results = self.http_data_collection.aggregate([
                 {
@@ -137,10 +116,10 @@ class MongodbDatabase(Database):
                     }
                 },
                 # {
-                #   '$out': tcpAggregatedDataString,
+                #   '$out': 'tcpAggregatedData',
                 # },
             ])
-            # print(list(results))
+            print(results)
             self.tcp_aggregated_data_collection.insert_many(results)
             # delete data
             result = self.http_data_collection.delete_many({
@@ -153,7 +132,7 @@ class MongodbDatabase(Database):
             logging.info('delete entries before ' + str(time_to_be_deleted))
             logging.info('number of records deleted: ' + str(deleted_count))
         except Exception as e:
-            # raise(e)
+            raise(e)
             print('Error: ' + str(e))
             logging.error('Error: ' + str(e))
         logging.info('Finished')
@@ -162,7 +141,7 @@ class MongodbDatabase(Database):
         logging.basicConfig(filename='db_rolling2.log', level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Started')
         try:
-            time_to_be_deleted = get_timestamp_before_in_milliseconds(time_before)  # 24 hours ago
+            time_to_be_deleted = get_timestamp_before_in_milliseconds(time_before)
 
             # print(list(results))
             # delete data

@@ -11,32 +11,30 @@ class ConfigParser:
             self.config = yaml.load(file)
 
     @property
-    def db_class_name(self):
-        return self.config[DB_CLASS_NAME]
+    def from_db_class_name(self):
+        return self.config[FROM_DB_CLASS_NAME]
 
     @property
-    def db_host(self):
-        return self.config[DB_HOST]
+    def to_db_class_name(self):
+        return self.config[TO_DB_CLASS_NAME]
 
     @property
-    def db_port(self):
-        return self.config[DB_PORT]
+    def from_db_host(self):
+        return self.config[FROM_DB_HOST]
 
     @property
-    def sniff_config(self):
-        return self.config[SNIFF_CONFIG]
+    def to_db_host(self):
+        return self.config[TO_DB_HOST]
 
     @property
-    def mode(self):
-        return self.config[MODE]
+    def from_db_port(self):
+        return self.config[FROM_DB_PORT]
+
+    @property
+    def to_db_port(self):
+        return self.config[TO_DB_PORT]
 
     @property
     def time_before(self):
-        if self.mode == AGGREGATE_MODE or self.mode == DELETE_AGGREGATED_DATA_MODE:
-            try:
-                time_before = int(self.config[TIME_BEFORE])
-                return time_before
-            # time before must be an integer
-            except Exception as e:
-                logging.error(e)
-                sys.exit()
+        time_before = int(self.config[TIME_BEFORE])
+        return time_before

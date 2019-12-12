@@ -1,17 +1,10 @@
 # for yaml configuration keys
-DB_CLASS_NAME = 'db_class_name'
-DB_PORT = 'db_port'
-DB_HOST = 'db_host'
-
-SNIFF_CONFIG = 'sniff_config'
-IFACE = 'iface'
-FILTER = 'filter'
-
-MODE = 'mode'
-SNIFFING_MODE = 'sniffing'
-ADDING_DEVICE_MODE = 'adding_device'
-DELETE_AGGREGATED_DATA_MODE = 'delete_aggregated_data'
-AGGREGATE_MODE = 'aggregate'
+FROM_DB_CLASS_NAME = 'from_db_class_name'
+TO_DB_CLASS_NAME = 'to_db_class_name'
+FROM_DB_PORT = 'from_db_port'
+FROM_DB_HOST = 'from_db_host'
+TO_DB_PORT = 'to_db_port'
+TO_DB_HOST = 'to_db_host'
 
 TIME_BEFORE = 'time_before'
 

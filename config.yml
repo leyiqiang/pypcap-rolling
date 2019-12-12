@@ -1,0 +1,7 @@
+from_db_class_name: 'RedisDatabase' # currently supports MongodbDatabase and RedisDatabase
+to_db_class_name: 'MongodbDatabase'
+from_db_host: 'localhost'
+from_db_port: '6379'
+to_db_host: 'localhost'
+to_db_port: '27017' # 27017 for mongodb, 6379 for redis
+time_before: '2'

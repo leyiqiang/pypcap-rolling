@@ -1,8 +1,7 @@
-db_class_name: '<DB_CLASS_NAME>' # currently supports mongodb(MongodbDatabase) and redis(RedisDatabase)
-db_host: '<DB_HOST>'
-db_port: '<DB_PORT>'
-sniff_config: # this configuration is only needed in sniffing mode
-  iface: '<INTERFACE>'
-  filter: '<PACKET_FILTER>'
-mode: '<MODE>' # mode is one of sniffing, adding_device, delete_aggregated_data, aggregate
-time_before: '<TIME_BEFORE>' # time before in seconds, this field is only required in delete_aggregated_data and aggregate mode
+from_db_class_name: '<DB_CLASS_NAME>' # currently supports mongodb(MongodbDatabase) and redis(RedisDatabase)
+to_db_class_name: '<DB_CLASS_NAME>' # currently supports mongodb(MongodbDatabase) and redis(RedisDatabase)
+from_db_host: '<FROM_DB_HOST>'
+from_db_port: '<FROM_DB_PORT>'
+to_db_host: '<TO_DB_HOST>'
+to_db_port: '<TO_DB_PORT>' # 27017 for mongodb, 6379 for redis
+time_before: '<TIME_BEFORE>' # time before in seconds
