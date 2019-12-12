@@ -33,5 +33,5 @@ if __name__ == '__main__':
 
     time_before = parser.time_before
     db_rolling = DBRolling(from_db_class_name, to_db_class_name, from_db_host, to_db_host, from_db_port, to_db_port)
-    db_rolling.delete_aggregated_data(time_before)
+    db_rolling.delete_aggregated_data()
     logging.info('Program start deleting aggregated data')
