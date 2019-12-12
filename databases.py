@@ -119,7 +119,7 @@ class MongodbDatabase(Database):
                 #   '$out': 'tcpAggregatedData',
                 # },
             ])
-            print(results)
+            print(list(results))
             self.tcp_aggregated_data_collection.insert_many(results)
             # delete data
             result = self.http_data_collection.delete_many({
